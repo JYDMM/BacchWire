@@ -8,7 +8,7 @@
 [![Twitter](https://img.shields.io/badge/Follow%20on%20Twitter-1da1f2)](https://twitter.com/ExistentialAI)
 [![Facebook](https://img.shields.io/badge/Like%20on%20Facebook-4267B2)](https://www.facebook.com/Existential-Audio-103423234434751)
 
-BlackHole is a modern macOS virtual audio loopback driver that allows applications to pass audio to other applications with zero additional latency.
+BACCH Router is a renamed fork of, BlackHole, a modern macOS virtual audio loopback driver that allows applications to pass audio to other applications with zero additional latency.
 
 ### [Download Installer](https://existential.audio/blackhole) 
 
@@ -28,10 +28,10 @@ BlackHole is a modern macOS virtual audio loopback driver that allows applicatio
 
 ## Features
 
-- Builds ~~2, ~~16~~, 64, 128, and 256~~ audio channels versions
+- Builds 2, 16 ~~, 64, 128, and 256~~ audio channels versions
 - Customizable channel count, latency, hidden devices
 - Customizable mirror device to allow for a hidden input or output
-- Supports ~~8kHz, 16kHz,~~ 32k, 44.1kHz, 48kHz, 88.2kHz, 96kHz, 176.4kHz, and 192kHz~~, 352.8kHz, 384kHz, 705.6kHz and 768kHz~~ sample rates
+- Supports ~~8kHz, 16kHz, 32k,~~ 44.1kHz, 48kHz, 88.2kHz, 96kHz, 176.4kHz, and 192kHz, ~~352.8kHz~~, 384kHz ~~, 705.6kHz and 768kHz~~ sample rates
 - Zero additional driver latency
 - Compatible with macOS 10.10 Yosemite and newer
 - Builds for Intel and Apple Silicon
