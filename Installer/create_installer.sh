@@ -12,20 +12,12 @@ set -euo pipefail
 # and a notarytool keychain profile:
 #   xcrun notarytool store-credentials notarize --team-id AYM3TY69AP --apple-id <apple id>
 #
-# Every setting below can be overridden from the environment. For a local test build without
-# Developer ID certificates:
+# Every setting here and in signing.sh can be overridden from the environment. For a local test
+# build without Developer ID certificates:
 #   APP_IDENTITY="Apple Development" INSTALLER_IDENTITY="" NOTARIZE=false ./Installer/create_installer.sh
 # If several certificates share a name, set the identity to the SHA-1 hash from `security find-identity -v`.
 
-driverName="BACCH Router"   # Shown in Audio MIDI Setup, the bundle name and the installer
-driverID="BACCHRouter"      # Used where spaces are not allowed (bundle IDs)
-bundleIDPrefix="audio.TAP"
-devTeamID="${DEV_TEAM_ID:-AYM3TY69AP}"
-appIdentity="${APP_IDENTITY-Developer ID Application}"          # Empty string = don't sign the driver
-installerIdentity="${INSTALLER_IDENTITY-Developer ID Installer}" # Empty string = unsigned .pkg
-notarize="${NOTARIZE:-true}"
-notarizeProfile="${NOTARIZE_PROFILE:-notarize}"
-channelVariants="${CHANNELS:-2 16}"
+appIdentity="${APP_IDENTITY-Developer ID Application}" # Empty string = don't sign the driver
 minOSVersion="12.4"         # Matches MACOSX_DEPLOYMENT_TARGET of the BlackHole target
 
 ############################################################################
@@ -46,43 +38,12 @@ if [ -z "$version" ]; then
     exit 1
 fi
 
-# Resolve a signing identity to exactly one certificate (preferring this team's), so a partial
-# name like "Developer ID Application" can't silently pick the wrong one.
-resolve_identity() { # $1 = name or SHA-1 hash, $2 = security policy args
-    local matches
-    if [[ "$1" =~ ^[0-9A-Fa-f]{40}$ ]]; then
-        echo "$1"
-        return
-    fi
-    matches=$(security find-identity -v $2 | grep "\"$1" | grep "($devTeamID)\"" || true)
-    if [ -z "$matches" ]; then
-        matches=$(security find-identity -v $2 | grep "\"$1" || true)
-    fi
-    if [ "$(printf '%s\n' "$matches" | grep -c .)" -ne 1 ]; then
-        echo "❌ Expected exactly one \"$1\" signing identity for team $devTeamID, found:" >&2
-        printf '%s\n' "${matches:-  (none)}" >&2
-        echo "   Add the certificate in Xcode > Settings > Apple Accounts > Manage Certificates," >&2
-        echo "   or set APP_IDENTITY / INSTALLER_IDENTITY to the certificate's SHA-1 hash." >&2
-        exit 1
-    fi
-    printf '%s\n' "$matches" | awk '{print $2}'
-}
+source Installer/signing.sh
 
 appSignArgs=()
 if [ -n "$appIdentity" ]; then
     appIdentityHash=$(resolve_identity "$appIdentity" "-p codesigning")
     appSignArgs=(--sign "$appIdentityHash")
-fi
-
-installerSignArgs=()
-pkgSuffix=""
-if [ -n "$installerIdentity" ]; then
-    installerIdentityHash=$(resolve_identity "$installerIdentity" "")
-    installerSignArgs=(--sign "$installerIdentityHash")
-else
-    echo "⚠️  INSTALLER_IDENTITY is empty: the installer packages will NOT be signed."
-    pkgSuffix="-UNSIGNED"
-    notarize=false
 fi
 
 for channels in $channelVariants; do
@@ -140,6 +101,7 @@ EOF
     cat > "$workDir/scripts/postinstall" <<EOF
 #!/bin/sh
 driverPath="/Library/Audio/Plug-Ins/HAL/$driverBundleName"
+restartAction="finish installing"
 chown -R root:wheel "\$driverPath"
 find "\$driverPath" -type d -exec chmod 755 {} \;
 find "\$driverPath" -type f -exec chmod 644 {} \;
@@ -206,16 +168,7 @@ EOF
       "$installerPkg"
     rm -rf "$workDir"
 
-    # Notarize and Staple
-    if [ "$notarize" = true ]; then
-        xcrun \
-          notarytool submit "$installerPkg" \
-          --progress \
-          --wait \
-          --keychain-profile "$notarizeProfile"
-
-        xcrun stapler staple "$installerPkg"
-    fi
+    notarize_and_staple "$installerPkg"
 
     echo "✅ $installerPkg"
 done

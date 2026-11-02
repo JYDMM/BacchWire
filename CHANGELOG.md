@@ -1,17 +1,19 @@
-#  BlackHole Changelog
+#  BACCH Router Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.7.1] - 2026-11-02
 - Merged upstream BlackHole 0.7.1.
 - Fixed the firmware version to match the driver version.
 - Fixed the box UID property not reporting its size.
 - kLatency_Frame_Size can now be overridden at build time.
 - Installer now sets permissions on the installed driver and the HAL folder.
 - Added BlackHole's copyright and trademark notice to LICENSE.
+- Rewrote the uninstaller for BACCH Router, with the same restart prompt as the installer.
+- README and installer now state that BACCH Router is free, standalone software.
 
 ## [0.7.0] - 2026-11-02
 - Renamed the driver to BACCH Router.

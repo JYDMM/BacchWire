@@ -39,6 +39,12 @@ Earlier versions installed as "BacchWire" or "BACCHRouter" are replaced by the i
 
 ## Uninstallation Instructions
 
+### Option 1: Use Uninstaller
+
+Open the BACCH Router uninstaller package for your version. When prompted, choose **Restart Audio**.
+
+### Option 2: Manually Uninstall
+
 1. Delete the driver with the terminal command:
 
     `sudo rm -R "/Library/Audio/Plug-Ins/HAL/BACCH Router Xch.driver"`
@@ -59,7 +65,7 @@ BACCH Router is based on BlackHole, which requires a license for all non-GPLv3 p
 
 ### Build & Install
 
-The Xcode project and target are named `BlackHole`, so a plain Xcode build produces `BlackHole.driver`. To build the named 2ch and 16ch drivers and their installers, use [create_installer.sh](Installer/create_installer.sh).
+The Xcode project and target are named `BlackHole`, so a plain Xcode build produces `BlackHole.driver`. To build the named 2ch and 16ch drivers and their installers, use [create_installer.sh](Installer/create_installer.sh). The uninstallers are built by [create_uninstaller.sh](Uninstaller/create_uninstaller.sh).
 
 To install a build by hand:
 

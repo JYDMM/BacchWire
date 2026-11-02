@@ -1,68 +1,68 @@
 #!/bin/bash
 set -euo pipefail
 
-devTeamID="Q5C99V536K" # ⚠️ Replace this with your own developer team ID
-notarize=true # To skip notarization, set this to false
-notarizeProfile="notarize" # ⚠️ Replace this with your own notarytool keychain profile name
+# Creates a signed and notarized BACCH Router uninstaller for each channel variant.
+# Run this script from the repo root:
+#   ./Uninstaller/create_uninstaller.sh
+#
+# Signing and notarization work the same way as Installer/create_installer.sh, and use the same
+# settings from Installer/signing.sh.
 
 # Basic Validation
 if [ ! -d BlackHole.xcodeproj ]; then
-    echo "This script must be run from the BlackHole repo root folder."
+    echo "This script must be run from the repo root folder."
     echo "For example:"
-    echo "  cd /path/to/BlackHole"
+    echo "  cd /path/to/Audio4Stratos"
     echo "  ./Uninstaller/create_uninstaller.sh"
     exit 1
 fi
 
-for channels in 2 16 64 128 256; do
+version=$(cat VERSION)
 
-	# create script
-	echo \
-	'#!/bin/bash
+if [ -z "$version" ]; then
+    echo "Could not find version number. VERSION file is missing from repo root or is empty."
+    exit 1
+fi
 
-file="/Library/Audio/Plug-Ins/HAL/BlackHole'$channels'ch.driver"
+source Installer/signing.sh
 
-if [ -d "$file" ] ; then
-    sudo rm -R "$file"
-    sudo killall coreaudiod
-fi' > Uninstaller/Scripts/postinstall
+for channels in $channelVariants; do
+    # Env
+    ch=$channels"ch"
+    bundleID="$bundleIDPrefix.$driverID$ch"
+    driverBundleName="$driverName $ch.driver"
+    workDir=$(mktemp -d)
 
-	chmod 755 Uninstaller/Scripts/postinstall
+    mkdir "$workDir/scripts"
+    cat > "$workDir/scripts/postinstall" <<EOF
+#!/bin/sh
+driverPath="/Library/Audio/Plug-Ins/HAL/$driverBundleName"
+restartAction="finish uninstalling"
 
-	# Build .pkg
-    packageName='Uninstaller/BlackHole'$channels'ch-Uninstaller.pkg'
+if [ ! -d "\$driverPath" ]; then
+    exit 0
+fi
 
-    pkgbuild --nopayload --scripts Uninstaller/Scripts --sign $devTeamID --identifier 'audio.existential.BlackHole'$channels'ch.Uninstaller' $packageName
+rm -rf "\$driverPath"
+pkgutil --forget "$bundleID" > /dev/null 2>&1 || true
 
-    # Notarize and Staple
-    if [ "$notarize" = true ]; then
+EOF
+    cat Installer/restart_coreaudio.sh >> "$workDir/scripts/postinstall"
+    chmod 755 "$workDir/scripts/postinstall"
 
-        # Submit the package for notarization and capture output, also displaying it simultaneously
-        output=$(xcrun notarytool submit "$packageName" --progress --wait --keychain-profile "$notarizeProfile" 2>&1 | tee /dev/tty)
+    # Build .pkg
+    uninstallerPkg="Uninstaller/$driverName $ch Uninstaller $version$pkgSuffix.pkg"
+    rm -f "$uninstallerPkg"
+    pkgbuild \
+      ${installerSignArgs[@]+"${installerSignArgs[@]}"} \
+      --nopayload \
+      --scripts "$workDir/scripts" \
+      --identifier "$bundleID.Uninstaller" \
+      --version "$version" \
+      "$uninstallerPkg"
+    rm -rf "$workDir"
 
-        # Extract the submission ID
-        submission_id=$(echo "$output" | grep -o -E 'id: [a-f0-9-]+' | awk '{print $2}' | head -n1)
+    notarize_and_staple "$uninstallerPkg"
 
-        if [ -z "$submission_id" ]; then
-          echo "Failed to extract submission ID. ❌"
-          exit 1
-        fi
-
-        # Check the captured output for the "status: Invalid" indicator
-        if echo "$output" | grep -q "status: Invalid"; then
-          echo "Error detected during notarization: Submission Invalid ❌"
-
-          # Fetch and display notarization logs
-          echo -e "\nFetching logs for submission ID: $submission_id"
-          xcrun notarytool log --keychain-profile "$notarizeProfile" "$submission_id"
-          exit 1
-        else
-          echo "Notarization submitted successfully ✅"
-        fi
-
-        xcrun stapler staple $packageName
-    fi
-
+    echo "✅ $uninstallerPkg"
 done
-
-rm Uninstaller/Scripts/postinstall
