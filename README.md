@@ -5,7 +5,7 @@
 
 BACCH Router is a renamed fork of BlackHole, a modern macOS virtual audio loopback driver that allows applications to pass audio to other applications with zero additional latency.
 
-BACCH Router is free, standalone software. It is not bundled with any commercially available software, but it may be used in conjunction with BACCH4Mac software.
+BACCH Router is free, standalone software. It is not bundled with any commercially available software.
 
 ## Table of Contents
 
