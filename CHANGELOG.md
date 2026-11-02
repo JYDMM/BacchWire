@@ -5,17 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-### Feature Requests
-
-- Add support for additional virtual formats. 24-bit, 16-bit.
-- Sync BlackHole audio clock with any audio device.
-- Create multi-output / aggregate device with installer.
-- Keep track of which apps are connected to the driver.
-
-
 ## [Unreleased]
-
-### Changed
+- Merged upstream BlackHole 0.7.1.
+- Fixed the firmware version to match the driver version.
+- Fixed the box UID property not reporting its size.
+- kLatency_Frame_Size can now be overridden at build time.
+- Installer now sets permissions on the installed driver and the HAL folder.
+- Added BlackHole's copyright and trademark notice to LICENSE.
 
 ## [0.7.0] - 2026-11-02
 - Renamed the driver to BACCH Router.
@@ -27,8 +23,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [0.6.1] - 2025-02-06
 - Updated installer to force a computer reboot as recommended by Apple.
 - Updated create_installer.sh script.
-
-### Changed 
 
 
 ## [0.6.0] - 2024-03-22

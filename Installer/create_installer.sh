@@ -134,12 +134,16 @@ for channels in $channelVariants; do
 halDir="/Library/Audio/Plug-Ins/HAL"
 mkdir -p "\$halDir"
 chown root:wheel "\$halDir"
+chmod 755 "\$halDir"
 rm -rf "\$halDir/BacchWire$ch.driver" "\$halDir/BACCHRouter ${channels}Ch.driver" "\$halDir/$driverBundleName"
 EOF
     cat > "$workDir/scripts/postinstall" <<EOF
 #!/bin/sh
 driverPath="/Library/Audio/Plug-Ins/HAL/$driverBundleName"
 chown -R root:wheel "\$driverPath"
+find "\$driverPath" -type d -exec chmod 755 {} \;
+find "\$driverPath" -type f -exec chmod 644 {} \;
+find "\$driverPath/Contents/MacOS" -type f -exec chmod 755 {} \;
 
 EOF
     cat Installer/restart_coreaudio.sh >> "$workDir/scripts/postinstall"
