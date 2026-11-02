@@ -26,7 +26,7 @@ minOSVersion="12.4"         # Matches MACOSX_DEPLOYMENT_TARGET of the BlackHole 
 if [ ! -d BlackHole.xcodeproj ]; then
     echo "This script must be run from the repo root folder."
     echo "For example:"
-    echo "  cd /path/to/Audio4Stratos"
+    echo "  cd /path/to/bacch-router"
     echo "  ./Installer/create_installer.sh"
     exit 1
 fi
