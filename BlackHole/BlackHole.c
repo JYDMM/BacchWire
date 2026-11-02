@@ -84,7 +84,7 @@
 //    qualities:
 //    - a box
 //    - a device
-//        - supports 44100, 48000, 88200, 96000, 176400, 192000, 352800, 384000, 705600, 768000, 8000, 16000 sample rates
+//        - supports 44100, 48000, 88200, 96000, 176400, 192000, 384000 sample rates
 
 
 //        - provides a rate scalar of 1.0 via hard coding
@@ -150,15 +150,21 @@ struct ObjectInfo {
 
 
 #ifndef kDriver_Name
-#define                             kDriver_Name                        "BacchWire"
+#define                             kDriver_Name                        "BACCH Router"
+#endif
+
+// Prefix for the device/box UIDs. Kept as "BACCHRouter" so the UIDs match earlier builds
+// and apps that saved the device selection keep finding it after the rename.
+#ifndef kDriver_UID_Name
+#define                             kDriver_UID_Name                    "BACCHRouter"
 #endif
 
 #ifndef kPlugIn_BundleID
-#define                             kPlugIn_BundleID                    "audio.TAP.BacchWire16ch"
+#define                             kPlugIn_BundleID                    "audio.TAP.BACCHRouter2ch"
 #endif
 
 #ifndef kPlugIn_Icon
-#define                             kPlugIn_Icon                        "App.icns"
+#define                             kPlugIn_Icon                        "BlackHole.icns"
 #endif
 
 #ifndef kHas_Driver_Name_Format
@@ -167,10 +173,10 @@ struct ObjectInfo {
 
 #if kHas_Driver_Name_Format
 #define                             kDriver_Name_Format                 "%ich"
-#define                             kBox_UID                            kDriver_Name kDriver_Name_Format "_UID"
-#define                             kDevice_UID                         kDriver_Name kDriver_Name_Format "_UID"
-#define                             kDevice2_UID                        kDriver_Name kDriver_Name_Format "_2_UID"
-#define                             kDevice_ModelUID                    kDriver_Name kDriver_Name_Format "_ModelUID"
+#define                             kBox_UID                            kDriver_UID_Name kDriver_Name_Format "_UID"
+#define                             kDevice_UID                         kDriver_UID_Name kDriver_Name_Format "_UID"
+#define                             kDevice2_UID                        kDriver_UID_Name kDriver_Name_Format "_2_UID"
+#define                             kDevice_ModelUID                    kDriver_UID_Name kDriver_Name_Format "_ModelUID"
 
 
 #ifndef kDevice_Name
@@ -183,10 +189,10 @@ struct ObjectInfo {
 
 
 #else
-#define                             kBox_UID                            kDriver_Name "_UID"
-#define                             kDevice_UID                         kDriver_Name "_UID"
-#define                             kDevice2_UID                        kDriver_Name "_2_UID"
-#define                             kDevice_ModelUID                    kDriver_Name "_ModelUID"
+#define                             kBox_UID                            kDriver_UID_Name "_UID"
+#define                             kDevice_UID                         kDriver_UID_Name "_UID"
+#define                             kDevice2_UID                        kDriver_UID_Name "_2_UID"
+#define                             kDevice_ModelUID                    kDriver_UID_Name "_ModelUID"
 
 
 #ifndef kDevice_Name
@@ -234,7 +240,7 @@ struct ObjectInfo {
 #define                             kLatency_Frame_Size                 0
 
 #ifndef kNumber_Of_Channels
-#define                             kNumber_Of_Channels                 16
+#define                             kNumber_Of_Channels                 2
 #endif
 
 #ifndef kEnableVolumeControl
@@ -321,7 +327,7 @@ static const UInt32                 kDevice_ObjectListSize              = sizeof
 static const UInt32                 kDevice2_ObjectListSize              = sizeof(kDevice2_ObjectList) / sizeof(struct ObjectInfo);
 
 #ifndef kSampleRates
-#define                             kSampleRates       32000, 44100, 48000, 88200, 96000, 176400, 192000
+#define                             kSampleRates       44100, 48000, 88200, 96000, 176400, 192000, 384000
 #endif
 
 static Float64                      kDevice_SampleRates[]               = { kSampleRates };
@@ -777,7 +783,7 @@ static OSStatus	BlackHole_Initialize(AudioServerPlugInDriverRef inDriver, AudioS
 	//	set the box name directly as a last resort
 	if(gBox_Name == NULL)
 	{
-		gBox_Name = CFSTR("BlackHole Box");
+		gBox_Name = CFSTR(kDriver_Name " Box");
 	}
 	
 	//	calculate the host ticks per frame

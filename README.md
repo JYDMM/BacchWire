@@ -1,6 +1,6 @@
 ![BlackHole: Audio Loopback Driver](Images/blackhole-banner-830px.png)
 
-# BacchWire: Audio Loopback Driver
+# BACCH Router: Audio Loopback Driver
 
 ![Platform: macOS](https://img.shields.io/badge/platform-macOS-lightgrey)
 [![Release](https://img.shields.io/github/v/release/ExistentialAudio/BlackHole)](https://github.com/ExistentialAudio/BlackHole/releases)
@@ -31,7 +31,7 @@ BlackHole is a modern macOS virtual audio loopback driver that allows applicatio
 - Builds ~~2, ~~16~~, 64, 128, and 256~~ audio channels versions
 - Customizable channel count, latency, hidden devices
 - Customizable mirror device to allow for a hidden input or output
-- Supports ~~8kHz, 16kHz,~~ 32k, 44.1kHz, 48kHz, 88.2kHz, 96kHz, 176.4kHz, and 192kHz~~, 352.8kHz, 384kHz, 705.6kHz and 768kHz~~ sample rates
+- Supports 44.1kHz, 48kHz, 88.2kHz, 96kHz, 176.4kHz, 192kHz and 384kHz sample rates
 - Zero additional driver latency
 - Compatible with macOS 10.10 Yosemite and newer
 - Builds for Intel and Apple Silicon

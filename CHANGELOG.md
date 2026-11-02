@@ -17,6 +17,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+## [0.7.0] - 2026-11-02
+- Renamed the driver to BACCH Router.
+- Added 384kHz and removed 32kHz. Supported sample rates are now 44.1kHz, 48kHz, 88.2kHz, 96kHz, 176.4kHz, 192kHz and 384kHz.
+- Fixed the device logo not appearing in Audio MIDI Setup.
+- Installer now asks to restart coreaudiod instead of requiring a system restart.
+- Installer removes earlier BacchWire and BACCHRouter versions of the same channel count.
+
 ## [0.6.1] - 2025-02-06
 - Updated installer to force a computer reboot as recommended by Apple.
 - Updated create_installer.sh script.
